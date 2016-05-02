@@ -68,8 +68,8 @@ view address model =
         , span [ class "tagline" ] [ text "“Like GitHub, but for Elm things.”" ]
         ]
     , input
-        [ class "search-query"
-          -- TODO when we receive onInput, set the query in the model
+        [ class "search-query",
+          onInput address SetQuery
         , defaultValue model.query
         ]
         []
@@ -98,8 +98,7 @@ viewSearchResult address result =
         [ href ("https://github.com/" ++ result.name), target "_blank" ]
         [ text result.name ]
     , button
-        -- TODO add an onClick handler that sends a DeleteById action
-        [ class "hide-result" ]
+        [ class "hide-result", onClick address (DeleteById result.id) ]
         [ text "X" ]
     ]
 
@@ -111,9 +110,11 @@ type Action
 
 update : Action -> Model -> Model
 update action model =
-  -- TODO if we get a SetQuery action, use it to set the model's query field,
-  -- and if we get a DeleteById action, delete the appropriate result
-  model
+  case action of
+    SetQuery newQuery ->
+      { model | query = newQuery }
+    DeleteById idToHide ->
+      { model | results = List.filter (\{id} -> id /= idToHide) model.results}
 
 
 main =
