@@ -77,23 +77,18 @@ viewSearchResult address result =
         [ href ("https://github.com/" ++ result.name), target "_blank" ]
         [ text result.name ]
     , button
-        -- TODO add an onClick handler that sends a DELETE_BY_ID action
-        [ class "hide-result" ]
+        [ class "hide-result", onClick address (DELETE_BY_ID result.id) ]
         [ text "X" ]
     ]
 
-
-type alias Action =
-  { -- TODO implement this type alias
-  }
-
-
 update : Action -> Model -> Model
 update action model =
-  -- TODO if we receive a DELETE_BY_ID action,
-  -- build a new model without the given ID present anymore.
-  model
+  case action of
+    DELETE_BY_ID resultId ->
+      { model | results = List.filter (\res -> res.id /= resultId) model.results }
 
+type Action =
+  DELETE_BY_ID ResultId
 
 main =
   StartApp.start
